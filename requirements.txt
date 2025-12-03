@@ -1,0 +1,59 @@
+# LAA Eligibility Checker - Python Dependencies
+# Run: pip install -r requirements.txt
+
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+Werkzeug==3.0.0
+
+# API & HTTP
+requests==2.31.0
+httpx==0.25.0
+
+# Environment & Config
+python-dotenv==1.0.0
+
+# Data Processing
+pandas==2.1.1
+numpy==1.24.3
+
+# JSON & Serialization
+pydantic==2.4.2
+
+# LLM & AI
+openai==1.3.0
+
+# PDF Generation (Optional)
+reportlab==4.0.7
+PyPDF2==3.16.0
+
+# Logging & Monitoring
+python-json-logger==2.0.7
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-flask==1.2.0
+
+# Code Quality
+flake8==6.1.0
+black==23.10.0
+isort==5.12.0
+pylint==3.0.2
+
+# Server
+gunicorn==21.2.0
+
+# Development
+ipython==8.16.0
+ipdb==0.13.13
+
+# Database (Optional)
+SQLAlchemy==2.0.21
+psycopg2-binary==2.9.9
+
+# Caching
+redis==5.0.0
+
+# Task Queue (Optional)
+celery==5.3.2
