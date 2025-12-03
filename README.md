@@ -87,6 +87,26 @@ npm start
 vercel --prod
 ```
 
+# Streamlit Web App (Alternative UI)
+
+```bash
+# Install Streamlit
+pip install -r requirements.txt
+
+# Run locally
+streamlit run streamlit_app.py
+
+# Open in browser
+# http://localhost:8501
+```
+
+**Deploy to Streamlit Cloud:**
+1. Push code to GitHub
+2. Go to [Streamlit Cloud](https://share.streamlit.io/)
+3. Click "New app" → Select your repository
+4. Choose branch: `main` → File path: `streamlit_app.py`
+5. App will deploy automatically
+
 ## 📁 Project Structure
 
 ```
