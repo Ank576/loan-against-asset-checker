@@ -1,40 +1,15 @@
-# LAA Eligibility Checker - Production Dependencies
+# LAA Eligibility Checker - Streamlit Deployment
 # RBI-compliant Loan Against Asset eligibility checker
-# Run: pip install -r requirements.txt
+# Run: pip install -r requirements.txt && streamlit run streamlit_app.py
 
-# Web Framework
-Flask==3.0.0
-Flask-CORS==4.0.0
+# Web Framework (Streamlit)
+streamlit==1.28.1
 
-# HTTP Clients
+# HTTP & API Clients
 requests==2.31.0
 
-# Environment & Configuration
+# Environment Configuration
 python-dotenv==1.0.0
-
-# JSON & Data Serialization
-pydantic==2.4.2
 
 # LLM & AI (Perplexity API - OpenAI compatible)
 openai==1.3.0
-
-# PDF Generation
-reportlab==4.0.7
-
-# Server (Production)
-gunicorn==21.2.0
-
-# Logging
-python-json-logger==2.0.7
-
-# Testing (Dev dependencies below)
-pytest==7.4.3
-pytest-flask==1.2.0
-
-# Code Quality
-flake8==6.1.0
-black==23.10.0
-isort==5.12.0
-
-# Web Framework - Streamlit
-streamlit==1.28.1
