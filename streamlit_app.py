@@ -157,8 +157,8 @@ response = client.chat.completions.create(
             max_tokens=500
         )
         
-        return response.choices[0].message.content
-    except Exception as e:
+                return response.choices[0].message.content
+        except Exception as e:
         return f"Error fetching LLM analysis: {str(e)}. Please ensure PERPLEXITY_API_KEY is set."
 
 st.markdown("# 🏦 Loan Against Asset Checker")
