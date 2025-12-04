@@ -33,7 +33,133 @@ client = OpenAI(
     base_url="https://api.perplexity.ai"
 )
 
-# ... [RBI_RULES, validate_gold, validate_property, validate_shares, get_llm_analysis as in your original code] ...
+# === RBI RULES & VALIDATION FUNCTIONS ===
+
+RBI_RULES = {
+    "gold_loan": {
+        "max_ltv_urban": 0.75,
+        "max_ltv_rural": 0.70,
+        "purity_min": 18,
+        "max_loan_amount": 10000000,
+    },
+    "property_mortgage": {
+        "max_ltv": 0.80,
+        "circle_rate_tolerance": 0.10,
+        "max_loan_amount": 50000000,
+    },
+    "share_pledge": {
+        "max_ltv_nifty50": 0.50,
+        "max_ltv_nifty100": 0.45,
+        "max_ltv_other": 0.40,
+        "max_loan_amount": 5000000,
+    },
+}
+
+def validate_gold(asset_value, loan_amount, location, purity):
+    """Validate gold loan against RBI norms."""
+    errors = []
+    rules = RBI_RULES["gold_loan"]
+    
+    # Check purity
+    if purity < rules["purity_min"]:
+        errors.append(f"Gold purity {purity} carats below RBI minimum of {rules['purity_min']} carats")
+    
+    # Check LTV
+    ltv_limit = rules["max_ltv_urban"] if location == "Urban" else rules["max_ltv_rural"]
+    ltv_used = (loan_amount / asset_value * 100) if asset_value > 0 else 0
+    max_eligible = asset_value * ltv_limit
+    
+    if loan_amount > max_eligible:
+        errors.append(f"Loan amount exceeds LTV limit of {ltv_limit*100:.0f}%")
+    
+    # Check max loan amount
+    if loan_amount > rules["max_loan_amount"]:
+        errors.append(f"Loan amount exceeds RBI maximum of ₹{rules['max_loan_amount']:,}")
+    
+    approved = len(errors) == 0
+    ltv_limit_str = f"{ltv_limit*100:.0f}%"
+    
+    return approved, max_eligible, ltv_used, errors, ltv_limit_str
+
+def validate_property(asset_value, loan_amount, circle_rate):
+    """Validate property mortgage against RBI norms."""
+    errors = []
+    rules = RBI_RULES["property_mortgage"]
+    
+    # Check circle rate variance
+    if asset_value > 0:
+        variance = abs(asset_value - circle_rate) / circle_rate
+        if variance > rules["circle_rate_tolerance"]:
+            errors.append(f"Property value variance from circle rate exceeds {rules['circle_rate_tolerance']*100:.0f}%")
+    
+    # Check LTV
+    ltv_limit = rules["max_ltv"]
+    ltv_used = (loan_amount / asset_value * 100) if asset_value > 0 else 0
+    max_eligible = asset_value * ltv_limit
+    
+    if loan_amount > max_eligible:
+        errors.append(f"Loan amount exceeds LTV limit of {ltv_limit*100:.0f}%")
+    
+    # Check max loan amount
+    if loan_amount > rules["max_loan_amount"]:
+        errors.append(f"Loan amount exceeds RBI maximum of ₹{rules['max_loan_amount']:,}")
+    
+    approved = len(errors) == 0
+    ltv_limit_str = f"{ltv_limit*100:.0f}%"
+    
+    return approved, max_eligible, ltv_used, errors, ltv_limit_str
+
+def validate_shares(asset_value, loan_amount, share_index):
+    """Validate share pledge against RBI norms."""
+    errors = []
+    rules = RBI_RULES["share_pledge"]
+    
+    # Get LTV limit based on index
+    if share_index == "NIFTY50":
+        ltv_limit = rules["max_ltv_nifty50"]
+    elif share_index == "NIFTY100":
+        ltv_limit = rules["max_ltv_nifty100"]
+    else:
+        ltv_limit = rules["max_ltv_other"]
+    
+    ltv_used = (loan_amount / asset_value * 100) if asset_value > 0 else 0
+    max_eligible = asset_value * ltv_limit
+    
+    if loan_amount > max_eligible:
+        errors.append(f"Loan amount exceeds LTV limit of {ltv_limit*100:.0f}% for {share_index}")
+    
+    # Check max loan amount
+    if loan_amount > rules["max_loan_amount"]:
+        errors.append(f"Loan amount exceeds RBI maximum of ₹{rules['max_loan_amount']:,}")
+    
+    approved = len(errors) == 0
+    ltv_limit_str = f"{ltv_limit*100:.0f}%"
+    
+    return approved, max_eligible, ltv_used, errors, ltv_limit_str
+
+def get_llm_analysis(asset_type, params):
+    """Get AI-powered RBI compliance analysis from Perplexity API."""
+    try:
+        prompt = f"""
+Analyze this {asset_type} against RBI regulations:
+- Asset Value: ₹{params.get('asset_value', 0):,}
+- Loan Amount: ₹{params.get('loan_amount', 0):,}
+- LTV Used: {params.get('ltv_used', 0):.1f}%
+
+Provide key RBI guidelines, compliance status, and recommendations.
+        """
+        
+        response = client.messages.create(
+            model="sonar",
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=500
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Error fetching LLM analysis: {str(e)}. Please ensure PERPLEXITY_API_KEY is set."
 
 st.markdown("# 🏦 Loan Against Asset Checker")
 st.markdown("#### RBI-compliant asset-backed lending with AI-powered RBI guidance")
