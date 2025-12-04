@@ -149,7 +149,7 @@ Analyze this {asset_type} against RBI regulations:
 Provide key RBI guidelines, compliance status, and recommendations.
         """
         
-        response = client.messages.create(
+response = client.chat.completions.create(
             model="sonar",
             messages=[
                 {"role": "user", "content": prompt}
