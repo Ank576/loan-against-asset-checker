@@ -28,7 +28,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.set_page_config(page_title="LAA Checker", page_icon="🏠", layout="wide")
 client = OpenAI(
     api_key=os.getenv("PERPLEXITY_API_KEY", ""),
     base_url="https://api.perplexity.ai"
