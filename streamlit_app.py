@@ -1,8 +1,8 @@
 import streamlit as st
+st.set_page_config(page_title="LAA Checker", page_icon="🏠", layout="wide")
 from datetime import datetime
 import os
 from openai import OpenAI
-st.set_page_config()
 
 # --- Add global CSS for fonts and section spacing ---
 st.markdown(
