@@ -37,6 +37,7 @@ client = OpenAI(
 
 st.markdown("# 🏦 Loan Against Asset Checker")
 st.markdown("#### RBI-compliant asset-backed lending with AI-powered RBI guidance")
+st.markdown("##### Build by Ankit Saxena with 🧡 | For Demo only | Not Financial Advisory")
 st.markdown("---")
 
 if "results_tab" not in st.session_state:
